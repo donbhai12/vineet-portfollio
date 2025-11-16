@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vineet Kumar | Portfolio</title>
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --bg-soft:#ffffff;
+      --sidebar:#f9fafb;
+      --text:#111827;
+      --muted:#6b7280;
+      --accent:#f97316;
+      --accent-soft:#fff3e7;
+      --shadow-soft:0 12px 35px rgba(15,23,42,0.10);
+      --radius:18px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
+    a{text-decoration:none;color:inherit}
+
+    .layout{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:260px minmax(0,1fr);
+      background:var(--bg);
+    }
+
+    /* SIDEBAR */
+    .sidebar{
+      background:var(--sidebar);
+      border-right:1px solid rgba(15,23,42,0.06);
+      padding:24px 18px;
+      position:relative;
+      z-index:20;
+    }
+    .brand{
+      font-family:"Playfair Display", Georgia, "Times New Roman", serif;
+      font-size:24px;
+      font-weight:600;
+      margin-bottom:32px;
+      position:relative;
+      padding-left:16px;
+    }
+    .brand::before,
+    .brand::after{
+      content:"";
+      position:absolute;
+      width:18px;height:18px;
+      border:3px solid var(--accent);
+    }
+    .brand::before{left:-4px;top:-8px;border-right:none;border-bottom:none}
+    .brand::after{right:8px;bottom:-10px;border-left:none;border-top:none}
+
+    .nav{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:8px;
+    }
+    .nav-divider{
+      height:1px;
+      background:rgba(15,23,42,0.06);
+      margin:16px 0;
+    }
+    .nav-link{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      color:var(--muted);
+      font-size:14px;
+      cursor:pointer;
+      transition:all .2s ease;
+    }
+    .nav-link-icon{
+      width:30px;height:30px;
+      border-radius:999px;
+      background:#ffffff;
+      display:grid;place-items:center;
+      box-shadow:0 4px 10px rgba(15,23,42,0.08);
+      font-size:15px;
+    }
+    .nav-link.active,
+    .nav-link:hover{
+      background:#ffffff;
+      color:var(--accent);
+    }
+
+    .sidebar-footer{
+      position:absolute;
+      bottom:24px;left:18px;right:18px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    /* MOBILE SIDEBAR TOGGLE */
+    .sidebar-toggle{
+      display:none;
+      position:fixed;
+      top:14px;left:14px;
+      z-index:40;
+    }
+    .sidebar-toggle button{
+      width:40px;height:40px;border-radius:999px;border:none;
+      background:var(--accent);
+      color:#fff;font-size:20px;cursor:pointer;
+      box-shadow:0 10px 25px rgba(249,115,22,0.35);
+    }
+
+    /* MAIN CONTENT */
+    .content{position:relative;overflow-x:hidden;}
+    .inner{max-width:1100px;margin:0 auto;padding:32px 40px 40px 40px;}
+
+    /* TOP RIGHT ACTIONS */
+    .top-actions{
+      position:fixed;
+      right:18px;top:18px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      z-index:30;
+    }
+    .icon-btn{
+      width:40px;height:40px;border-radius:999px;
+      border:none;cursor:pointer;
+      background:#ffffff;
+      box-shadow:0 8px 22px rgba(15,23,42,0.18);
+      display:grid;place-items:center;
+      font-size:18px;
+    }
+
+    /* HERO */
+    .hero{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1.2fr);gap:40px;align-items:center;}
+
+    .hero-heading{font-size:18px;margin-bottom:10px;color:var(--muted);}
+    .hero-heading span{color:var(--accent);font-weight:700;}
+    .hero-title{font-size:36px;font-weight:800;margin-bottom:8px;}
+    .typed{color:var(--accent);border-right:2px solid var(--accent);padding-right:4px;white-space:nowrap;overflow:hidden;}
+    .hero-sub{margin:8px 0 18px 0;font-size:17px;font-weight:600;color:#111827;}
+    .hero-text p{max-width:580px;color:var(--muted);font-size:14px;line-height:1.6;}
+
+    .hero-actions{margin-top:24px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+    .btn-primary{
+      background:var(--accent);
+      border:none;padding:11px 26px;
+      border-radius:999px;
+      color:#ffffff;font-weight:600;font-size:14px;
+      cursor:pointer;
+      box-shadow:0 10px 28px rgba(249,115,22,0.45);
+      transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(249,115,22,0.55);}
+
+    .btn-ghost{
+      background:transparent;border-radius:999px;
+      border:1px solid rgba(15,23,42,0.12);
+      padding:10px 20px;font-size:14px;
+      color:var(--muted);
+      cursor:pointer;
+    }
+    .btn-small{padding:7px 14px;font-size:12px;border-radius:999px;border:1px solid rgba(15,23,42,0.12);background:#fff;cursor:pointer;}
+
+    .search-pill{
+      margin-top:18px;
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 14px;border-radius:999px;
+      background:var(--accent-soft);
+      color:var(--accent);
+      font-size:12px;font-weight:600;
+      animation:float 3s ease-in-out infinite;
+    }
+    .search-dot{width:8px;height:8px;border-radius:999px;background:var(--accent);}
+
+    /* HERO PHOTO */
+    .hero-photo{justify-self:end;}
+    .photo-card{
+      background:var(--bg-soft);
+      padding:18px;border-radius:var(--radius);
+      box-shadow:var(--shadow-soft);
+      position:relative;
+    }
+    .photo-card img{width:100%;max-width:320px;border-radius:16px;display:block;object-fit:cover;}
+    .corner{
+      position:absolute;width:40px;height:40px;border:4px solid var(--accent);
+    }
+    .corner.tl{top:10px;left:10px;border-right:none;border-bottom:none;}
+    .corner.br{bottom:10px;right:10px;border-left:none;border-top:none;}
+
+    /* SECTIONS */
+    .section{margin-top:70px;scroll-margin-top:90px;}
+    .section-title{font-size:22px;margin-bottom:6px;}
+    .section-sub{color:var(--muted);font-size:13px;margin-bottom:16px;}
+
+    /* ABOUT */
+    .about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:22px;}
+    .card{
+      background:var(--bg-soft);
+      border-radius:var(--radius);
+      box-shadow:0 10px 26px rgba(15,23,42,0.06);
+      padding:18px;
+    }
+    .card h4{margin-bottom:8px;font-size:15px;}
+    .card p{font-size:14px;color:var(--muted);line-height:1.6;}
+    .info-list{list-style:none;font-size:13px;color:var(--muted);}
+    .info-list li{display:flex;justify-content:space-between;margin-bottom:6px;}
+    .info-list span:first-child{font-weight:600;color:#4b5563;}
+
+    /* SERVICES */
+    .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;}
+    .service-card{background:var(--bg-soft);border-radius:var(--radius);padding:16px;box-shadow:0 10px 26px rgba(15,23,42,0.06);}
+    .service-card h4{margin-bottom:6px;font-size:15px;}
+    .service-card p{font-size:13px;color:var(--muted);}
+
+    /* PORTFOLIO */
+    .portfolio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;}
+    .portfolio-card{background:var(--bg-soft);border-radius:var(--radius);padding:16px;box-shadow:0 10px 26px rgba(15,23,42,0.06);}
+    .portfolio-card h4{margin-bottom:4px;font-size:15px;}
+    .portfolio-card small{color:#9ca3af;font-size:12px;}
+    .portfolio-card p{margin-top:8px;margin-bottom:10px;font-size:13px;color:var(--muted);}
+
+    /* CONTACT */
+    .contact-grid{display:grid;grid-template-columns:1.1fr 1.1fr;gap:22px;}
+    .contact-form input,
+    .contact-form textarea{
+      width:100%;padding:10px 12px;margin-bottom:10px;
+      border-radius:12px;border:1px solid rgba(15,23,42,0.12);
+      font:inherit;outline:none;
+    }
+    .contact-form textarea{min-height:110px;resize:vertical;}
+
+    /* GAME MODAL */
+    .game-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:60;}
+    .game-backdrop{position:absolute;inset:0;background:rgba(15,23,42,0.45);}
+    .game-dialog{
+      position:relative;z-index:1;
+      width:100%;max-width:480px;
+      background:var(--bg-soft);
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(15,23,42,0.35);
+      padding:18px 18px 20px 18px;
+    }
+    .game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+    .game-title{font-size:18px;font-weight:700;}
+    .game-close{border:none;background:transparent;font-size:22px;cursor:pointer;color:var(--muted);}
+    .game-instructions{font-size:13px;color:var(--muted);margin-bottom:12px;}
+    .game-area{border-radius:14px;border:1px solid rgba(15,23,42,0.08);padding:12px;min-height:120px;background:var(--bg);}
+
+    .guess-input{display:flex;gap:8px;margin-bottom:8px;}
+    .guess-input input{flex:1;padding:8px 10px;border-radius:10px;border:1px solid rgba(15,23,42,0.18);outline:none;font:inherit;}
+
+    .memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+    .memory-card{background:#e5e7eb;border-radius:10px;padding:10px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;}
+    .memory-card.revealed{background:#ffffff;}
+    .memory-card.matched{background:#bbf7d0;cursor:default;}
+
+    .click-game{display:flex;flex-direction:column;align-items:center;gap:10px;}
+
+    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-5px)}100%{transform:translateY(0)}}
+
+    /* RESPONSIVE */
+    @media (max-width:960px){
+      .layout{grid-template-columns:1fr;}
+      .sidebar{
+        position:fixed;inset:0 auto 0 0;width:230px;
+        transform:translateX(-100%);
+        transition:transform .28s ease;
+        box-shadow:0 0 0 rgba(0,0,0,0);
+      }
+      .sidebar.open{transform:translateX(0);box-shadow:0 0 0 999px rgba(15,23,42,0.35);}
+      .sidebar-toggle{display:block;}
+      .inner{padding:70px 18px 30px 18px;}
+      .hero{grid-template-columns:1fr;gap:26px;}
+      .hero-photo{justify-self:center;}
+      .top-actions{top:16px;right:16px;}
+      .about-grid{grid-template-columns:1fr;}
+      .contact-grid{grid-template-columns:1fr;}
+    }
+
+    @media (max-width:540px){
+      .hero-title{font-size:30px;}
+      .hero-sub{font-size:15px;}
+      .photo-card img{max-width:260px;}
+      .memory-grid{grid-template-columns:repeat(3,1fr);}
+    }
+  </style>
+</head>
+<body>
+  <!-- MOBILE MENU BUTTON -->
+  <div class="sidebar-toggle"><button id="menuToggle">☰</button></div>
+
+  <!-- TOP RIGHT ACTIONS -->
+  <div class="top-actions">
+    <button class="icon-btn" id="themeToggle" title="Toggle theme">🌙</button>
+    <button class="icon-btn" id="accentToggle" title="Change color">🎨</button>
+  </div>
+
+  <div class="layout">
+    <!-- SIDEBAR NAV -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">Vineet Kumar</div>
+      <nav class="nav">
+        <a class="nav-link active" data-target="home"><span class="nav-link-icon">🏠</span>Home</a>
+        <div class="nav-divider"></div>
+        <a class="nav-link" data-target="about"><span class="nav-link-icon">👤</span>About</a>
+        <a class="nav-link" data-target="services"><span class="nav-link-icon">📋</span>Services</a>
+        <a class="nav-link" data-target="portfolio"><span class="nav-link-icon">💼</span>Portfolio</a>
+        <a class="nav-link" data-target="contact"><span class="nav-link-icon">💬</span>Contact</a>
+      </nav>
+      <div class="sidebar-footer">© <span id="yearNow"></span> Vineet Kumar</div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+      <div class="inner">
+        <!-- HERO / HOME -->
+        <section id="home" class="hero section">
+          <div class="hero-text">
+            <div class="hero-heading">Hello, I am <span>Vineet Kumar</span></div>
+            <div class="hero-title">I'm a <span class="typed" id="typedText">Frontend Developer</span></div>
+            <div class="hero-sub">Java Full Stack Developer • Blogger • Content Creator</div>
+            <p>
+              I help people understand technology and government schemes in simple Hindi. I completed my
+              <strong>B.Sc (Chemistry)</strong> in 2022 and <strong>Junior Full Stack Java Development</strong> from
+              Edujob in 2023. Through my blog <strong>govinfohindi.com</strong> and Instagram page
+              <strong>@govinfohindi</strong> (50k+ followers), I have already earned around <strong>$1000</strong>.
+            </p>
+            <div class="hero-actions">
+              <button class="btn-primary" id="downloadCV">Download CV</button>
+              <button class="btn-ghost" onclick="window.open('https://govinfohindi.com','_blank')">Visit Blog</button>
+            </div>
+            <div class="search-pill">
+              <span class="search-dot"></span>
+              <span>Search me on Google — I am Available</span>
+            </div>
+          </div>
+
+          <div class="hero-photo">
+            <div class="photo-card">
+              <div class="corner tl"></div>
+              <div class="corner br"></div>
+              <img id="heroPhoto" src="https://vineet-portfolio-p.netlify.app/images/vineet.jpg" alt="Vineet Kumar" />
+            </div>
+          </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about" class="section">
+          <h2 class="section-title">About Me</h2>
+          <p class="section-sub">A quick look at my background, education and profile.</p>
+          <div class="about-grid">
+            <div class="card">
+              <h4>Who am I?</h4>
+              <p>
+                I'm Vineet Kumar, a developer and blogger from India. I love building clean and responsive UIs
+                and explaining complex topics in Hindi. My journey moved from science to software: after completing
+                B.Sc, I trained as a Junior Full Stack Java Developer and started working online through
+                blogging and tech projects.
+              </p>
+            </div>
+            <div class="card">
+              <h4>Profile & Education</h4>
+              <ul class="info-list">
+                <li><span>Birthday</span><span>10 Aug 2001</span></li>
+                <li><span>Age</span><span>24</span></li>
+                <li><span>Website</span><span>govinfohindi.com</span></li>
+                <li><span>Email</span><span>donbhaismartvineet@gmail.com</span></li>
+                <li><span>Degree</span><span>B.Sc</span></li>
+                <li><span>Phone</span><span>+91-735512-1493</span></li>
+                <li><span>City</span><span>Kanpur</span></li>
+                <li><span>Freelance</span><span>Available</span></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- SERVICES -->
+        <section id="services" class="section">
+          <h2 class="section-title">Services</h2>
+          <p class="section-sub">How I can help you and your business.</p>
+          <div class="services-grid">
+            <div class="service-card">
+              <h4>Frontend Development</h4>
+              <p>Modern responsive websites built using HTML, CSS, Bootstrap and JavaScript.</p>
+            </div>
+            <div class="service-card">
+              <h4>Java Full Stack (Junior)</h4>
+              <p>Java-based backend, basic APIs and integration for small to medium web apps.</p>
+            </div>
+            <div class="service-card">
+              <h4>Blog Setup & SEO</h4>
+              <p>WordPress blog setup, content structure, basic SEO and AdSense/affiliate strategy.</p>
+            </div>
+            <div class="service-card">
+              <h4>Tech in Hindi</h4>
+              <p>Hindi tutorials and explanations for tools, websites, and government schemes.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- PORTFOLIO -->
+        <section id="portfolio" class="section">
+          <h2 class="section-title">Portfolio</h2>
+          <p class="section-sub">Some highlighted work and interactive mini‑games.</p>
+          <div class="portfolio-grid" id="portfolioGrid">
+            <div class="portfolio-card">
+              <h4>govinfohindi.com</h4>
+              <small>Blog • SEO • Monetisation</small>
+              <p>Hindi blog explaining government schemes and tech tutorials. Reached 50k+ followers and generated ~$1000.</p>
+              <button class="btn-small" onclick="window.open('https://govinfohindi.com','_blank')">Visit Site</button>
+            </div>
+            <div class="portfolio-card">
+              <h4>Personal Portfolio</h4>
+              <small>HTML • CSS • JavaScript</small>
+              <p>Animated, responsive personal portfolio to present my skills, services and projects.</p>
+              <button class="btn-small" onclick="document.getElementById('home').scrollIntoView({behavior:'smooth'})">View Section</button>
+            </div>
+            <div class="portfolio-card">
+              <h4>Neon Runner Mini‑Game</h4>
+              <small>JavaScript • Canvas</small>
+              <p>Simple side‑runner style game: press space to jump over obstacles. Shows my ability to work with Canvas and basic physics.</p>
+              <button class="btn-small play-game" data-game="runner">Play Game</button>
+            </div>
+            <div class="portfolio-card">
+              <h4>Memory Match Game</h4>
+              <small>HTML • CSS • JavaScript</small>
+              <p>Card‑flipping memory game with smooth flips and match tracking. Built for practising state handling in pure JavaScript.</p>
+              <button class="btn-small play-game" data-game="memory">Play Game</button>
+            </div>
+            <div class="portfolio-card">
+              <h4>Number Guess Challenge</h4>
+              <small>JavaScript • Game Logic</small>
+              <p>Guess a secret number in limited attempts. Focused on clean validation, feedback and user experience.</p>
+              <button class="btn-small play-game" data-game="guess">Play Game</button>
+            </div>
+          </div>
+          <button class="btn-ghost" id="addProject" style="margin-top:14px;">Add Sample Project (Demo)</button>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact" class="section">
+          <h2 class="section-title">Contact</h2>
+          <p class="section-sub">Let&apos;s talk about your idea, project or collaboration.</p>
+          <div class="contact-grid">
+            <div class="card">
+              <h4>Contact Details</h4>
+              <ul class="info-list" style="margin-top:6px;">
+                <li><span>Email</span><span>vineet@example.com</span></li>
+                <li><span>Instagram</span><span>@govinfohindi</span></li>
+                <li><span>Website</span><span>govinfohindi.com</span></li>
+                <li><span>Location</span><span>India</span></li>
+              </ul>
+            </div>
+            <form class="card contact-form" onsubmit="event.preventDefault();alert('Thanks for reaching out! (Demo)');">
+              <h4>Write a Message</h4>
+              <input type="text" placeholder="Your Name" required />
+              <input type="email" placeholder="Your Email" required />
+              <textarea placeholder="Your Message"></textarea>
+              <button class="btn-primary" type="submit">Send Message</button>
+            </form>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- GAME MODAL -->
+  <div class="game-modal" id="gameModal">
+    <div class="game-backdrop" id="gameBackdrop"></div>
+    <div class="game-dialog">
+      <div class="game-header">
+        <div class="game-title" id="gameTitle">Game</div>
+        <button class="game-close" id="gameClose">×</button>
+      </div>
+      <div class="game-instructions" id="gameInstructions"></div>
+      <div class="game-area" id="gameArea"></div>
+    </div>
+  </div>
+
+  <script>
+    // current year
+    document.getElementById('yearNow').textContent = new Date().getFullYear();
+
+    // typewriter
+    const roles = ['Frontend Developer','Java Full Stack Developer','Blogger & Creator'];
+    const typedSpan = document.getElementById('typedText');
+    let roleIndex = 0, charIndex = 0, deleting = false;
+    function typeLoop(){
+      const current = roles[roleIndex];
+      if(!deleting){
+        charIndex++;
+        if(charIndex === current.length+1){
+          deleting = true;
+          setTimeout(typeLoop,900);
+          typedSpan.textContent = current.substring(0,charIndex);
+          return;
+        }
+      } else {
+        charIndex--;
+        if(charIndex === 0){
+          deleting = false;
+          roleIndex = (roleIndex+1)%roles.length;
+        }
+      }
+      typedSpan.textContent = current.substring(0,charIndex);
+      const speed = deleting ? 60 : 120;
+      setTimeout(typeLoop,speed);
+    }
+    typeLoop();
+
+    // nav scroll + active
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link=>{
+      link.addEventListener('click',()=>{
+        const targetId = link.dataset.target;
+        const section = document.getElementById(targetId);
+        if(section){ section.scrollIntoView({behavior:'smooth'}); }
+        document.getElementById('sidebar').classList.remove('open');
+      });
+    });
+
+    const sections = document.querySelectorAll('.section');
+    window.addEventListener('scroll',()=>{
+      let currentId = 'home';
+      sections.forEach(sec=>{
+        const rect = sec.getBoundingClientRect();
+        if(rect.top <= 120 && rect.bottom >= 120){ currentId = sec.id; }
+      });
+      navLinks.forEach(l=>l.classList.toggle('active', l.dataset.target === currentId));
+    });
+
+    // theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    let dark = false;
+    themeToggle.addEventListener('click',()=>{
+      dark = !dark;
+      if(dark){
+        document.documentElement.style.setProperty('--bg','#020617');
+        document.documentElement.style.setProperty('--bg-soft','#020617');
+        document.documentElement.style.setProperty('--sidebar','#020617');
+        document.documentElement.style.setProperty('--text','#e5e7eb');
+        document.documentElement.style.setProperty('--muted','#9ca3af');
+        document.documentElement.style.setProperty('--accent-soft','#1f2937');
+        themeToggle.textContent = '☀️';
+      } else {
+        document.documentElement.style.setProperty('--bg','#f5f7fb');
+        document.documentElement.style.setProperty('--bg-soft','#ffffff');
+        document.documentElement.style.setProperty('--sidebar','#f9fafb');
+        document.documentElement.style.setProperty('--text','#111827');
+        document.documentElement.style.setProperty('--muted','#6b7280');
+        document.documentElement.style.setProperty('--accent-soft','#fff3e7');
+        themeToggle.textContent = '🌙';
+      }
+    });
+
+    // accent toggle
+    const accentToggle = document.getElementById('accentToggle');
+    const accents = ['#f97316','#6366f1','#22c55e','#ec4899','#0ea5e9'];
+    let accentIndex = 0;
+    accentToggle.addEventListener('click',()=>{
+      accentIndex = (accentIndex+1)%accents.length;
+      const c = accents[accentIndex];
+      document.documentElement.style.setProperty('--accent',c);
+      document.documentElement.style.setProperty('--accent-soft',c+'20');
+    });
+
+    // mobile sidebar
+    document.getElementById('menuToggle').addEventListener('click',()=>{
+      document.getElementById('sidebar').classList.toggle('open');
+    });
+
+    // add sample project dynamically
+    const portfolioGrid = document.getElementById('portfolioGrid');
+    document.getElementById('addProject').addEventListener('click',()=>{
+      const card = document.createElement('div');
+      card.className = 'portfolio-card';
+      card.innerHTML = '<h4>Sample Client Landing Page</h4><small>UI • Frontend</small><p>Demo project card added dynamically with JavaScript to show how projects can be managed without manually editing HTML.</p>';
+      portfolioGrid.appendChild(card);
+    });
+
+    // download CV demo
+    document.getElementById('downloadCV').addEventListener('click',()=>{
+      const cv = `Vineet Kumar
+Frontend & Java Full Stack Developer
+
+Education:
+- 12th (2019)
+- B.Sc (Chemistry), 2022
+- Junior Full Stack Java, Edujob (2023)
+
+Experience & Highlights:
+- Blogger at govinfohindi.com
+- Earned ~$1000 from blogging
+- 50k+ followers on @govinfohindi
+
+Skills:
+- HTML, CSS, Bootstrap, JavaScript
+- Java & basic backend
+- Blogging, SEO, Content in Hindi`;
+      const blob = new Blob([cv],{type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'Vineet_Kumar_CV.txt'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // ==== GAME MODAL & GAMES ====
+    const gameModal = document.getElementById('gameModal');
+    const gameBackdrop = document.getElementById('gameBackdrop');
+    const gameClose = document.getElementById('gameClose');
+    const gameTitle = document.getElementById('gameTitle');
+    const gameInstructions = document.getElementById('gameInstructions');
+    const gameArea = document.getElementById('gameArea');
+
+    function openGame(type){
+      gameArea.innerHTML = '';
+      if(type === 'guess') initGuessGame();
+      if(type === 'memory') initMemoryGame();
+      if(type === 'runner') initRunnerGame();
+      gameModal.style.display = 'flex';
+    }
+    function closeGame(){ gameModal.style.display = 'none'; gameArea.innerHTML=''; }
+
+    gameClose.addEventListener('click',closeGame);
+    gameBackdrop.addEventListener('click',closeGame);
+
+    document.querySelectorAll('.play-game').forEach(btn=>{
+      btn.addEventListener('click',()=> openGame(btn.dataset.game));
+    });
+
+    // Number Guess Game
+    function initGuessGame(){
+      gameTitle.textContent = 'Number Guess Challenge';
+      gameInstructions.textContent = 'Guess a secret number between 1 and 50. You have 7 attempts.';
+      const secret = Math.floor(Math.random()*50)+1;
+      let attempts = 7;
+      const wrap = document.createElement('div');
+      const inputRow = document.createElement('div');
+      inputRow.className = 'guess-input';
+      const input = document.createElement('input');
+      input.type = 'number'; input.placeholder = 'Enter your guess';
+      const btn = document.createElement('button');
+      btn.textContent = 'Check'; btn.className='btn-small';
+      inputRow.appendChild(input); inputRow.appendChild(btn);
+      const status = document.createElement('div');
+      status.style.fontSize='13px'; status.style.marginTop='4px';
+      status.textContent = `Attempts left: ${attempts}`;
+      wrap.appendChild(inputRow); wrap.appendChild(status);
+      gameArea.appendChild(wrap);
+
+      btn.addEventListener('click',()=>{
+        const val = parseInt(input.value,10);
+        if(isNaN(val) || val<1 || val>50){
+          status.textContent = 'Please enter a number between 1 and 50.';
+          return;
+        }
+        attempts--;
+        if(val === secret){
+          status.textContent = `🎉 Correct! ${secret} was the number. Click Play again to restart.`;
+          btn.disabled = true; input.disabled = true;
+        } else if(attempts <= 0){
+          status.textContent = `❌ Out of attempts. The number was ${secret}.`;
+          btn.disabled = true; input.disabled = true;
+        } else {
+          status.textContent = `${val < secret ? 'Too low.' : 'Too high.'} Attempts left: ${attempts}`;
+          input.value='';
+        }
+      });
+    }
+
+    // Memory Match Game
+    function initMemoryGame(){
+      gameTitle.textContent = 'Memory Match Game';
+      gameInstructions.textContent = 'Tap cards to reveal icons and match all pairs in the fewest moves.';
+      const icons = ['🔥','💧','🌿','⚡','⭐','🎧','🚀','🎯'];
+      let cards = icons.slice(0,4).concat(icons.slice(0,4)); // 4 pairs (8 cards)
+      cards = cards.sort(()=>Math.random()-0.5);
+      const grid = document.createElement('div');
+      grid.className = 'memory-grid';
+      let first = null, second = null, lock=false, matches=0, moves=0;
+      const info = document.createElement('div');
+      info.style.fontSize='13px'; info.style.marginBottom='6px'; info.textContent='Moves: 0';
+      gameArea.appendChild(info);
+      gameArea.appendChild(grid);
+
+      cards.forEach((icon,idx)=>{
+        const card = document.createElement('div');
+        card.className='memory-card';
+        card.dataset.icon = icon;
+        card.dataset.index = idx;
+        card.textContent='';
+        grid.appendChild(card);
+        card.addEventListener('click',()=>{
+          if(lock || card.classList.contains('matched') || card===first) return;
+          card.classList.add('revealed');
+          card.textContent = icon;
+          if(!first){ first = card; return; }
+          second = card; lock = true; moves++; info.textContent = `Moves: ${moves}`;
+          if(first.dataset.icon === second.dataset.icon){
+            setTimeout(()=>{
+              first.classList.add('matched');
+              second.classList.add('matched');
+              matches++;
+              first = second = null; lock=false;
+              if(matches===4){ info.textContent = `🎉 All pairs matched in ${moves} moves!`; }
+            },350);
+          } else {
+            setTimeout(()=>{
+              first.classList.remove('revealed'); first.textContent='';
+              second.classList.remove('revealed'); second.textContent='';
+              first = second = null; lock=false;
+            },500);
+          }
+        });
+      });
+    }
+
+    // Simple Runner-like Click Game
+    function initRunnerGame(){
+      gameTitle.textContent = 'Neon Runner Mini‑Game';
+      gameInstructions.textContent = 'Click JUMP to avoid the obstacles. Survive as long as you can!';
+      const container = document.createElement('div');
+      container.style.position='relative';
+      container.style.height='120px';
+      container.style.background='#0f172a';
+      container.style.borderRadius='10px';
+      container.style.overflow='hidden';
+      container.style.marginBottom='8px';
+
+      const player = document.createElement('div');
+      player.style.width='24px'; player.style.height='24px';
+      player.style.borderRadius='6px';
+      player.style.background='#22c55e';
+      player.style.position='absolute';
+      player.style.left='20px'; player.style.bottom='10px';
+
+      const obstacle = document.createElement('div');
+      obstacle.style.width='18px'; obstacle.style.height='40px';
+      obstacle.style.borderRadius='6px';
+      obstacle.style.background='#f97316';
+      obstacle.style.position='absolute';
+      obstacle.style.right='-30px'; obstacle.style.bottom='10px';
+
+      const scoreLabel = document.createElement('div');
+      scoreLabel.style.fontSize='13px';
+      scoreLabel.style.marginBottom='6px';
+      scoreLabel.style.color='var(--muted)';
+      scoreLabel.textContent='Score: 0';
+
+      const btn = document.createElement('button');
+      btn.textContent='JUMP'; btn.className='btn-small';
+      btn.style.marginTop='6px';
+
+      gameArea.appendChild(scoreLabel);
+      gameArea.appendChild(container);
+      container.appendChild(player);
+      container.appendChild(obstacle);
+      gameArea.appendChild(btn);
+
+      let jumping=false, vy=0, score=0, running=true;
+      function loop(){
+        if(!running) return;
+        // obstacle movement
+        const right = parseFloat(obstacle.style.right);
+        let newRight = right + 4;
+        if(newRight > container.clientWidth + 40){
+          newRight = -30; score++; scoreLabel.textContent = 'Score: ' + score;
+        }
+        obstacle.style.right = newRight + 'px';
+
+        // jump physics
+        let bottom = parseFloat(player.style.bottom);
+        bottom += vy;
+        vy -= 1.2; // gravity
+        if(bottom <= 10){ bottom = 10; vy = 0; jumping=false; }
+        player.style.bottom = bottom + 'px';
+
+        // collision check
+        const pRect = player.getBoundingClientRect();
+        const oRect = obstacle.getBoundingClientRect();
+        if(!(pRect.right < oRect.left || pRect.left > oRect.right || pRect.bottom < oRect.top || pRect.top > oRect.bottom)){
+          running=false;
+          scoreLabel.textContent = 'Game over! Final Score: ' + score + '. Click JUMP to restart.';
+        }
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+
+      btn.addEventListener('click',()=>{
+        if(!running){ // restart
+          obstacle.style.right='-30px';
+          player.style.bottom='10px';
+          vy=0;jumping=false;score=0;scoreLabel.textContent='Score: 0';running=true;requestAnimationFrame(loop);return;
+        }
+        if(!jumping){ jumping=true; vy=10; }
+      });
+    }
+
+    // reduced motion
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      document.querySelectorAll('*').forEach(el=>{
+        el.style.animationDuration='0.001ms';
+        el.style.animationIterationCount='1';
+      });
+    }
+  </script>
+</body>
+</html>
